@@ -1,0 +1,32 @@
+name: Build APK Android 🚀
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+    - uses: actions/cache@v4
+      with:
+        path: Library
+        key: Library-${{ github.sha }}
+    - uses: game-ci/unity-builder@v4
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      with:
+        targetPlatform: Android
+        unityVersion: 2022.3.20f1  # غيّر حسب إصدارك
+    - uses: actions/upload-artifact@v4
+      with:
+        name: MyCarGame-APK
+        path: build/Android/*.apk  # أو *.aab لـ App Bundle
